@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Emergency Healthcare App</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <button id="sosButton">Send SOS</button>
+
+  <script>
+    document.getElementById('sosButton').addEventListener('click', () => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const location = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+
+          fetch('/api/alerts/sos', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ userId: 'user_id_here', location }),
+          })
+            .then(response => response.json())
+            .then(data => {
+              alert(data.message);
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        });
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
+    });
+  </script>
+</body>
+</html>
